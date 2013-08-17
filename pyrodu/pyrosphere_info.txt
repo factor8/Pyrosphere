@@ -1,3 +1,13 @@
+TODO
+====
+
+Reconfigure and reconcile Autopilot / Random animation settings
+Reconfigure Modeselektor / setMode so that mode changes also reconfigure basic settings as necessary
+Test disparaging nodedurations
+Make sure our 'active' flag placement is good. What should 'inactive' disable?
+
+==
+
 PYROSPHERE ARDUINO PINMAP V1
 
 LCH -> 2  (BROWN)
@@ -12,3 +22,43 @@ VERSION 2
 Switch VERSION #define to 2 for Arduino Mega w/ Ethernet SD reader.
 Pinmap is the same.
 	
+== PATTERNS	 ==
+	
+== Good For Sure	
+	
+	
+	
+== 	
+
+== DELETE ==
+
+
+==
+
+== Terms
+
+	Simple
+	Single
+
+	Progressive
+
+	Chaotic
+	Scatter
+	Frantic
+
+
+	Kick 
+	Hi Hat
+	Oscillate
+	Build up
+	Break Down
+	Bridge
+
+
+	Slow
+
+
+
+
+
+	ALL

@@ -65,10 +65,10 @@ int 				controlMode 					= 1; 								//default: random;
 //Frame
 Frame 			frameBuffer;
 char 				messageBuffer[8];  												// Can't forsee more than 8c*s as long as we stay away from long pattern titles.
-char 				patterns;
 //
 int 				bufferIndex 					= 0; 								//This global manages the buffer index.
 //
+boolean 		active								= true; 						// Are we even going there or not? ON/OFF switch.
 boolean 		status								= false; 						//TODO: Add the capability to enable and disable debugging remotely! See 'toggledebug'
 boolean 		debug 								= true;							// Where the frame is updated until we're ready to send the data to the shift registers
 // This array maps a node number to a register and bit. It won't change during the course of the program
@@ -323,20 +323,16 @@ void loop()
 	}
 
   now = millis();       	// This moment is beautiful.
-	//
 	
-	flameSustain(); 				// Sustains flame based on each pin's last timestamp and current flameDuration
+	flameSustain(); 				// Sustains flame based on each pin's last timestamp and current frameDuration	
 	
-	
-	
-	//
-	// nextFrame();					// Select mode based on information.
 	modeSelektor();					// Select mode based on information.
-	//
+	
 	serialPolling();				// Check for last CMD
-	//
-  ignite();       				// Send the 1011 and let the people have some fun.
 
+	if (!active) { initFrameBuffer(); }
+  ignite();       				// Send the 1011 and let the people have some fun.	
+	
 	//We are polling the serial connection.
 	while(Serial.available() > 0) {
     char x = Serial.read();
@@ -361,12 +357,16 @@ void statusUpdate() {
 
 void serialRouting(char x){
 	//Flags, set read mode., begin
+
+	/// Don't we want to prioritize this by most likely input? Probably +/- first.
+	
 	if 				( x == '!' ) 		{		readMode 	= 1;  	}					//Pattern
 	else if 	( x == '@' ) 		{		readMode 	= 2;  	}	 				//Frame Duration
 	else if  	( x == '#' ) 		{		readMode 	= 3; 		}					//Frame Interval
 	else if   ( x == '+' ) 		{		readMode 	= 4;  	}					//Shift Register IDs, separated by comma (no whitespace)
 	else if   ( x == '-' ) 		{		readMode 	= 5;  	}					//Shift Register IDs, separated by comma (no whitespace)
 	else if   ( x == '~' ) 		{		readMode 	= 6;  	}					//System Mode 
+	else if   ( x == '*' ) 		{		readMode 	= 7;  	}					//System Mode 	
 	else if  	( x == '/' ) 		{		getFiles(); 			}		
 	else if  	( x == '?' ) 		{		statusUpdate(); 	}			
 	//Add custom flags here.
@@ -383,6 +383,7 @@ void serialRouting(char x){
 			case 4: 			setValveOn(); 			break;
 			case 5: 			setValveOff();			break;
 			case 6: 			setMode();					break;			
+			case 7: 			setActive();				break;						
 			default:  												break;	
 		}
 		
@@ -433,7 +434,7 @@ void serialPolling(){
 	      Serial.println("Automatic love generation.");
 	    }      
 	    autoPilot = true;
-			controlMode = 1;		
+			controlMode = 1; /// Clean this up
 	  }
 	}
 }
@@ -449,10 +450,10 @@ void modeSelektor(){
 	/// do we need a switch for all this?
 
 	if (controlMode == 2) 	{
-		frameDuration = MAX_FRAME_DURATION;
+		frameDuration = MAX_FRAME_DURATION; // Do we need this anymore?
 	} else {
-		/// We might want this to end up being a previous value instead of a default... 
-		frameDuration = DEFAULT_FRAME_DURATION;		
+		// /// We might want this to end up being a previous value instead of a default... 
+		// frameDuration = DEFAULT_FRAME_DURATION;		
 	}
 		
 
@@ -487,33 +488,6 @@ void nextFrame(){
   }
   then = now;
 }
-// void nextFrame(){
-// 	long since = now - then;
-// 	
-// 	// Serial.print("Since: "); ///
-// 	// Serial.println(since);///
-// 	
-// 	if(since > frameInterval || since > MAX_FRAME_INTERVAL){  
-// 		Serial.println("Going to Next Frame...");///
-// 		
-// 	  // Go to next frame
-// 		if(updateFrame()){
-// 			
-// 	    if(loopCount > loopThresh){
-// 	      if(autoPilot){
-// 					// if 				(controlMode == '0') 	randomAnimation();
-// 					// else if 	(controlMode == '1') 	progressiveAnimation();
-// 					goGoAutoPilot();
-// 	      }
-// 	      loopCount = 0;
-// 	    } else {
-// 	      loopCount++;
-// 	    }
-// 
-// 	  }
-// 	}
-//   then = now;
-// }
 
 /*************************************************************************************
  * Safety + Sustain
@@ -522,7 +496,8 @@ void nextFrame(){
 
 void flameSustain(){
 
-	//Check for length the
+	// Check for how long each node has been on.
+	
   // for(int i = 0; i < TOTAL_NODES; i++){      // This loop turns off nodes based on their timestamp and how long each is to be on
   // 		long onFor = now - nodeTimeStamps[i];
   //   if(nodeTimeStamps[i] > 0){
@@ -689,6 +664,42 @@ void flameSustain(){
 		
 		resetMessageBuffer();
 		
+	}
+		
+	/**
+	 * Set Switch
+	 * Switch off, switch on, or reset.
+	 */
+
+	void setActive(){
+	
+		char *activeSig = messageBuffer;
+		int sig = atoi(activeSig); 
+		// strcat(modeName, ".dat");
+			
+		Serial.print("Setting Switch: ");
+		Serial.println(sig);
+		
+		//This will update the global variables accordingly.
+		switch(sig){
+			case 0: 			active = false;   		break; // Off.
+			case 1: 			active = true;   		break; // On.
+			case 2:  			resetPattern();		break; // Reset ///Do we want to activate here too?
+			default:  											break;	
+		}	
+		
+		resetMessageBuffer();
+		
+	}
+	
+	/**
+	 * Reset Pattern
+	 * Rewind to the beginning and set the loop count to 0.
+	 */
+	void resetPattern () {
+		Serial.println("Resetting Pattern");
+		animation.rewind();
+		loopCount = 0;
 	}
 		
 	/**
