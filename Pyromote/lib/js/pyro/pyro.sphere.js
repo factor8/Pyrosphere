@@ -10,6 +10,7 @@
 			refreshRate : 20,
 			frameInterval : 400,
 			frameDuration : 400,
+			valve : -1,
 			pattern : '00',
 			active : 0,
 			//
@@ -34,6 +35,10 @@
 				totalRequests : 0,
 			};
 
+			// $('script[name=socket]').attr('src', $.Pyro.Config.URI.Socket+'/socket.io/socket.io.js');			
+			scope.socket = io.connect($.Pyro.Config.URI.Socket);			
+
+
 			// if(!scope.options.$grid) return;
 			
 			$(this).data('Pyro.Sphere', scope);
@@ -49,7 +54,6 @@
 			scope.options[key] = value;
 			$(this).data('Pyro.Sphere', scope);
 			$.Pyro.Sphere.Buffer.apply( this, [ key, value ]);
-			
 			return true;
 		}
 		
@@ -68,10 +72,12 @@
 			
 			if(now - scope.status.lastRequest < scope.options.refreshRate && !forceSend) return; //Useful for mouseup.
 			
-			console.log(scope.request);
 			
 			scope.status.lastRequest = now;
-			// $.Pyro.Socket.emit('pipe', scope.request);
+			
+						console.log(scope.request);
+			
+			scope.socket.emit('pyro.pipe', scope.request);
 			
 			scope.request = "";
 			$(this).data('Pyro.Sphere', scope);
@@ -91,12 +97,14 @@
 			if(key == 'pattern') 				prefix += '!';
 			if(key == 'frameDuration') 	prefix += '@';
 			if(key == 'frameInterval') 	prefix += '#';
+			if(key == 'valveOn') 				prefix += '+';
+			if(key == 'valveOff') 			prefix += '-';
 			
 			// scope.checkActivity();
 			
 			scope.request += prefix+(value)+'.';
 			
-			 $(this).data('Pyro.Sphere', scope);
+			$(this).data('Pyro.Sphere', scope);
 			
 		}
 		
@@ -118,29 +126,30 @@
 		}
 		//
 		
-		$.Pyro.Sphere.send = function( request ) {
+		$.Pyro.Sphere.Methods.send = function( request ) {
 			var scope = $(this).data('Pyro.Sphere');
 			//Make sure this is properly formatted!
-			// $.Pyro.Socket.emit('pipe', request);
+			scope.socket.emit('pyro.pipe', request);
+			// scope.socket.emit('pyro.pipe', request);
 		}
 		
 		//Helpers
 		$.Pyro.Sphere.updateInterval = function(interval){
 			var scope = $(this).data('Pyro.Sphere');
 			if(typeof interval != 'integer') return;
-			// $.Pyro.Socket.emit('pipe', '#'+interval+'.');
+			// scope.socket.emit('pipe', '#'+interval+'.');
 		}
 		
 		$.Pyro.Sphere.updateDuration = function(duration){
 			var scope = $(this).data('Pyro.Sphere');
 			if(typeof interval != 'integer') return;
-			// $.Pyro.Socket.emit('pipe', '@'+duration+'.');
+			// scope.socket.emit('pipe', '@'+duration+'.');
 		}
 		
 		$.Pyro.Sphere.updatePattern = function(pattern){
 			var scope = $(this).data('Pyro.Sphere');
 			if(typeof interval != 'integer') return;
-			// $.Pyro.Socket.emit('pipe', '!'+pattern+'.');
+			// scope.socket.emit('pipe', '!'+pattern+'.');
 		}
 		
 		// Generic Send, formatted string.
@@ -149,24 +158,19 @@
 		// 			
 		// 				method = method ? 'sphere.'+method : 'sphere';
 		// 				//
-		//         $.Pyro.Socket.emit(method, message);
+		//         scope.socket.emit(method, message);
 		// 				//
 		//     };
 
 		$.Pyro.Sphere.off = function(pyro, message){
 				var scope = $(this).data('Pyro.Sphere');
-				$.Pyro.Socket.emit('sphere.active', 0);
+				// scope.socket.emit('sphere.active', 0);
     };
 
 		$.Pyro.Sphere.on = function(el, message){
 			var scope = $(this).data('Pyro.Sphere');
-       $.Pyro.Socket.emit('sphere.active', 1);
+       // scope.socket.emit('sphere.active', 1);
     };
-    
-    $.Pyro.Sphere.defaultOptions = {
-			
-    };
-
 		$.fn.pyrosphere = function( method ){
 				var methods = $.Pyro.Sphere.Methods;
 

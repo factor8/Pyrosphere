@@ -27,6 +27,7 @@ LOOP = false;
 		console.log('Pyroloop Reset!');
 		var self = this;
 		
+		var loop = $(self).data('Pyro.Loop');
 
 		if(LOOP) clearInterval(LOOP);
 		
@@ -46,7 +47,7 @@ LOOP = false;
 				}
 			}
 			
-		}, 20);
+		}, 100);
 	}
 	
 	$.Pyro.Loop.Methods.blog = function(){

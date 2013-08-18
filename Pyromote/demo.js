@@ -85,25 +85,30 @@ $(function(){
 				{ left : $(document).width(), top : $(document).height() } //right down
 			];
 			
-			watch(scope.status, 'mousedown', function(){
-			    console.log('Mousedown changed');
-			});
+			scope.$lineX = $('<div>');
+			scope.$lineY = $('<div>');
 			
-			watch(scope.status, 'idle', function(){
-			    console.log('Idle changed');
-			});
+			// scope.$stats.appendTo(scope.$pointer.find('.zero'));
+			
+			// watch(scope.status, 'mousedown', function(){
+			    // console.log('Mousedown changed');
+			// });
+			
+			// watch(scope.status, 'idle', function(){
+			    // console.log('Idle changed');
+			// });
 		
 			
-			watch(scope.status.value, 'x', function(prop, action, newvalue, oldvalue){
+			// watch(scope.status.value, 'x', function(prop, action, newvalue, oldvalue){
 				// duration
-				console.log('x change')
+				// console.log('x change')
 			  // socket.emit('pipe', '@'+newValue.x || oldValue.x+'.');
-			});
+			// });
 			
-			watch(scope.status.value, function(prop, action, newvalue, oldvalue){
+			// watch(scope.status.value, function(prop, action, newvalue, oldvalue){
 				//interval
-				socket.emit('pipe', '#'+newValue.y || oldValue.y+'.');
-			});
+				// socket.emit('pipe', '#'+newValue.y || oldValue.y+'.');
+			// });
 			
 			// watch(scope.timestamp, 'lastActivity', function(){
 			// 	    console.log('Activity')
@@ -122,16 +127,14 @@ $(function(){
 		//When there is a change in value (down or move)
 		xy.action.change = function( pos, event, scope ){
 			
-			var size = new Object();
-					size.x = normalize(scope.status.value.x, 20, 750, 40, 200, true ); // between 40 and 200, round it
-					size.y = normalize(scope.status.value.y, 20, 750, 40, 200, true ); // ^
+			// var size = new Object();
+					// size.x = normalize(scope.status.value.x, 20, 750, 40, 200, true ); // between 40 and 200, round it
+					// size.y = normalize(scope.status.value.y, 20, 750, 40, 200, true ); // ^
 					
-			scope.$stats.find('.x .value').css('font-size', size.x+'pt');
-			scope.$stats.find('.y .value').css('font-size', size.y+'pt');
+			// scope.$stats.find('.x .value').css('font-size', size.x+'pt');
+			// scope.$stats.find('.y .value').css('font-size', size.y+'pt');
 			
-			var active = $sphere.pyrosphere('get', 'active');
-			
-			if(active == 0) $sphere.pyrosphere('set', 'active', 1 );
+			if(!$sphere.pyrosphere('get', 'active')) $sphere.pyrosphere('set', 'active', 1 );
 			
 			$sphere.pyrosphere('set', 'frameDuration', scope.status.value.x );
 			$sphere.pyrosphere('set', 'frameInterval', scope.status.value.y );
@@ -159,7 +162,7 @@ $(function(){
 			var average = (scope.status.pos.x + scope.status.pos.y) / 2;
 			var max = $grid.width() > $grid.height() ? $grid.width()  : $grid.height(); //Bigger of the two
 			var alpha = normalize(average, 0, max, 0.10, 0.60); //Normalize average between
-			$pointer.find('.gradient').css('opacity', alpha);
+			if(!scope.options.minimal) $pointer.find('.gradient').css('opacity', alpha);
 			
 			//Size
 			var raw = new Object();
@@ -185,7 +188,7 @@ $(function(){
 			
 			console.log('Hello world!');
 			
-			if(scope.options.sound) $.playSound('lib/sounds/positive.wav', 2000); 
+			if(scope.options.sound && !scope.options.minimal) $.playSound('lib/sounds/positive.wav', 2000); 
 			
 			scope.status.clicks = 1;
 			
@@ -195,8 +198,11 @@ $(function(){
 		xy.action.down = function( pos, event, scope ){ 
 			var $grid = $(this);	
 			scope.$pointer.css({ opacity : 1 });
-			if(scope.options.sound && scope.status.clicks > 1) $.playSound('lib/sounds/welcome.wav', 2000);
+			if(scope.options.sound && scope.status.clicks > 1 && !scope.options.minimal) $.playSound('lib/sounds/welcome.wav', 2000);
 			scope.status.clicks++;
+			
+			$('.toolbar').show();
+			
 			$grid.data('Pyro.Grid', scope) ;
 		}
 
@@ -209,14 +215,24 @@ $(function(){
 			
 			scope = $grid.data('Pyro.Grid');
 			
+			$('.toolbar').show();
+			
 			if(!scope.options.hold) {
 				
+				if(!scope.options.minimal) {
+				
 				var trans = scope.transitions[rand];
-						trans.easing = 'easeInExpo';
-						trans.opacity = 0;
-						scope.$pointer.stop().animate(trans, 200, function(){
-									// scope.$pointer.css({ left : scope.$pointer.width()*-1, top : scope.$pointer.width()*-1 });
-						});
+				
+					trans.easing = 'easeInExpo';
+					trans.opacity = 0;
+					scope.$pointer.stop().animate(trans, 200, function(){});
+				
+				} else {
+					
+					scope.$pointer.stop().css(trans);
+					
+				}
+						
 						
 				$sphere.pyrosphere('set', 'active', 0);
 				$sphere.pyrosphere('process');
@@ -234,19 +250,20 @@ $(function(){
 			
 			labelX : 'Duration',
 			labelY : 'Interval',
-
-			// hold : true,
+			// noMouseClick : true,
+			hold : false,
 			// useX : false,
 			pressmove : xy.action.move,
 			pressdown : xy.action.down,
 			pressup : xy.action.up,
 			alterValue : xy.action.normalize,
-			pointer : xy.action.pointer,
+			minimal : true,
+			// pointer : xy.action.pointer,
 			change : xy.action.change,
 			setup : xy.action.setup,
 			firstActivity : xy.action.firstActivity,
 			idleEnd : xy.action.idleEnd,
-			$loop : $loop
+			// $loop : $loop
 			
 		}
 		
@@ -259,16 +276,30 @@ $(function(){
 	var patternconfig = { 
 
 		enableHotkeys : true,
-		queueTimeout : 100,
-		$loop : $loop,
+		queueTimeout : 5555,
+		// $loop : $loop,
+		
+		onqueue : function( scope ){
+			var self = this;
+			scope.$clock.show();
+			$('.progress', scope.$clock).stop().css({ right : '100%' }).animate({ right : '0%' }, scope.options.queueTimeout);
+		},
+		
+		onqueuestop : function( scope ){
+			var self = this;
+			scope.$clock.hide();
+			$('.progress', scope.$clock).stop().css({ right : '100%' });
+		},
 		
 		onready : function(){
 			console.log('OK!');
 		},
 		
 		onselect : function( scope, event ){
+			
 			//If enough time has passed...
-			console.log('Love????');
+			$sphere.pyrosphere('set', 'pattern', scope.current.data.filename);
+			$sphere.pyrosphere('process');
 			
 		}
 		
@@ -276,15 +307,10 @@ $(function(){
 	
 	$loop.pyroloop('addAction', 'timeElapsed', function(){
 		
-		// console.log('Time!');
-		
 		var time = $app.data('Pyro.Time');
-		// console.log(time);
-		if(!time) time = { started : new Date().getTime(), elapsed : 0, now : new Date().getTime(), last : new Date().getTime() }
-		// if(!time.last) {
-			// $app.data('Pyro.Time', time);
-			// return;
-		// }
+		
+		if(!time) time = { started : new Date().getTime(), elapsed : 0, now : new Date().getTime(), last : new Date().getTime() };
+			
  		var last = time.now;
 		time.now = new Date().getTime()
 		time.elapsed = time.started - last;
@@ -292,7 +318,7 @@ $(function(){
 
 		$app.data('Pyro.Time', time);		
 		
-	}, 1000)
+	}, 1000);
 	
 	var $patterns = $('#patterns').pyroqueue(patternconfig, patterndata);
 	
@@ -300,14 +326,14 @@ $(function(){
 						
 		return {
 			useX : false,
-			hold :true,
+			hold : true,
 			setup : function( scope ){
 				// console.log(scope.status.offset);
 				// console.log(scope.status.placement);
 			},
 			pressdown : function( pos, event, scope ){
 				// console.log(scope.status.offset);
-				// console.log(scope.status.offset);
+				console.log( pos );
 			}
 		}
 		

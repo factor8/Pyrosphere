@@ -35,7 +35,7 @@
 				lastActivity : -1,
 				lastMove : 0
 			},
-			$loop : false
+			// $loop : false
 		}
 
 		// Options
@@ -50,6 +50,8 @@
 			
 			labelX : 'x',
 			labelY : 'y',
+			
+			minimal : false,
 			
 			// Callbacks
 			change : function( pos, event, scope ){  },
@@ -187,7 +189,7 @@
 		$.Pyro.Grid.Events.MouseUp = function( event ){
 			var scope = $(this).data('Pyro.Grid');
 			
-			if(!scope.status.mousedown) return; //May not be active if mousedown occured on a different grid!
+			// if(!scope.status.mousedown) return; //May not be active if mousedown occured on a different grid!
 			
 			if(!scope.options.pressup.apply( this , [ event, scope ] )) {
 				if(!scope.options.hold) {
@@ -203,21 +205,28 @@
 		}
 		
 		$.Pyro.Grid.Events.MouseMove = function( event ){
+			
+			event.preventDefault();
+			
 			var scope = $(this).data('Pyro.Grid');
 			var pos = { x: event.pageX, y: event.pageY };
 			
-			if(scope.status.mousedown == false) return;
+			if(!scope.status.mousedown) return;
+			
 			// if(!$.Pyro.Grid.inBounds.apply( this, [pos, scope] )) return;
 			
-			$.Pyro.Grid.Status.Update.apply(this, [pos, event, scope]);
+			$.Pyro.Grid.Status.Update.apply(this, [ pos, event, scope ]);
 			
-			scope.options.pressmove.apply( this , [pos, event , scope] );
-			scope.options.change.apply( this , [pos, event , scope] );
+			scope.options.pressmove.apply( this , [pos, event, scope] );
+			scope.options.change.apply( this , [pos, event, scope] );
 			
-				return true;
+			// return true;
 		}
 		
 		$.Pyro.Grid.Events.TouchStart = function( event ){
+			
+			event.preventDefault();
+			
 			var $grid = $(this);
 			var scope = $grid.data('Pyro.Grid');
 			var touch = event.originalEvent.touches[0] || event.originalEvent.changedTouches[0];
@@ -233,12 +242,16 @@
 		
 		$.Pyro.Grid.Events.TouchEnd = function( event ){
 			
+			event.preventDefault();
+			
 			var scope = $(this).data('Pyro.Grid');
 			scope.options.pressup.apply( this , [pos, event , scope] );
 			
 		}
 		
 		$.Pyro.Grid.Events.TouchMove = function( event ){
+
+			event.preventDefault();
 			
 			var scope = $(this).data('Pyro.Grid');
 			var touch = event.originalEvent.touches[0] || event.originalEvent.changedTouches[0];
@@ -318,7 +331,7 @@
 				}, 1000);
 			}
 			else {
-				$.Pyro.Grid.Idle.activeInterval = actions(function(){
+				$.Pyro.Grid.Idle.activeInterval = setInterval(function(){
 					var scope = $grid.data('Pyro.Grid');
 					//If not already idle, and check idle returns true, begin idle.
 					if( !scope.status.idle && $.Pyro.Grid.Idle.check.apply(self, [ scope ]) ) $.Pyro.Grid.Idle.begin.apply( this, [ scope ]);
@@ -396,7 +409,12 @@
 			
 			var $pointer = $('<div>').appendTo($grid);
 					$pointer.addClass('pointer');
-					$pointer.html('<span class="gradient"></span><span class="zero"></span>')
+					if(scope.options.minimal){
+						$pointer.html('<span class="zero"></span>')						
+					} else {
+						$pointer.html('<span class="gradient"></span><span class="zero"></span>')
+					}
+
 			
 			scope.$pointer = $pointer;
 			scope.$stats = $('<div>');

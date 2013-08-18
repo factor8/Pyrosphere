@@ -13,20 +13,46 @@ $(function($){
 	
 	$.Pyro.Config.Limits = new Object();
 	
+	
+	/***************************************
+		Environment Configuration
+		Developers edit these...!
+	/***************************************/
+	
+	$.Pyro.Config.URI = new Object();
+
+	$.Pyro.Config.URI.Socket = 'http://192.168.1.100:3000'; /*development*/
+	// $.Pyro.Config.URI.Socket = 'http://192.168.1.111:3000'; /*production*/
+	// $.Pyro.Config.URI.Socket = 'http://dskvr-2.local:3000'; /*edge testing, alpha*/
+
+
+
+
+	/***************************************
+		Experience Configuration
+		Edit these to create optimal user experience by 
+		finding the 'sweet spot'
+	/***************************************/	
+	
+
+	
 	//
 	// ACTIONABLE PARAMS
 	//
 	//Flame Duration
 	$.Pyro.Config.Limits.Interval = new Object();
 	$.Pyro.Config.Limits.Interval.Min = 40;
-	$.Pyro.Config.Limits.Interval.Max = 750;
+	$.Pyro.Config.Limits.Interval.Max = 200;
 	
 	//Flame Duration Limits
 	$.Pyro.Config.Limits.Duration = new Object();
 	$.Pyro.Config.Limits.Duration.Min = 40;
-	$.Pyro.Config.Limits.Duration.Max = 750;
+	$.Pyro.Config.Limits.Duration.Max = 300;
 	
 	$.Pyro.Config.Limits.IdleThreshold = 60*1000; //sixty seconds.
+	
+	
+	
 
 	//
 	// UI PREFERENCES

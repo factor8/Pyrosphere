@@ -2,21 +2,25 @@ body, html, body > section, body > section > article 		 { height:100%; margin:0;
 
 #master {position:relative;height:100%;width:100%;}
 
-.grid 	.grid-stats {margin-top:15%;position:absolute;z-index:1;width:100%;height:100%;}
+.grid 	.grid-stats {position:absolute;z-index:1;top:0px;left:0px;right:0px;bottom:0px;}
 .grid  .grid-stats > * {margin:0;padding:0;width:100%;}
-.grid  .grid-stats .key {display:inline-block; color:#050505; font-size:60pt; text-transform:uppercase;padding:30px 15px;}
-.grid  .grid-stats .value {color:#111;float:right;font-size:150pt;margin-top:-20px;position:absolute;left:50%;font-family: 'Nova Square', cursive;}
+.grid  .grid-stats .key {display:inline-block; color:#151515; font-size:60pt; text-transform:uppercase;padding:30px 15px;}
+.grid  .grid-stats .value {color:#222;float:right;font-size:150pt;margin-top:-20px;position:absolute;left:50%;font-family: 'Nova Square', cursive;}
+
+/*.grid-stats { font-size:8pt;  }*/
 
 section[role=xaxis] { position:absolute; top: 0px; left:0px; right:0px; height:50%; border-bottom:1px dotted #111; }
 section[role=yaxis] { position:absolute; top: 0px; bottom:0px; left:0px; width:50%; border-right:1px dotted #111; }
 
 
-body 					 { background:#000; overflow:hidden; }
+body 					 { background:#000; /*overflow:hidden;*/ }
 
-.grid 				 { width:100%; height:100%; overflow:hidden; position:relative; z-index:1000}
+.grid 				 { width:100%; height:100%; /*overflow:hidden;*/ position:relative; top:0px; z-index:1000}
 
 .grid-half     { width: 50%; float:left; }
 .grid-third     { width: 33.33%; float:left; }
+
+.grid .veil { position:absolute; top:0px; left:0px; right:0px; bottom:0px; z-index:99999;}
 
 .grid .pointer { 
 	left:0px; /*x*/
@@ -51,13 +55,13 @@ body 					 { background:#000; overflow:hidden; }
 .grid .pointer .zero { 
 	background:#fff;
 	position:absolute;
-	width:10px;
-	height:10px;
+	width:100px;
+	height:100px;
 	display:block;
 	left:50%;
 	top:50%;
-	margin-left:-5px;
-	margin-top:-5px;
+	margin-left:-50px;
+	margin-top:-50px;
 }
 
 .follower {position:absolute;}
@@ -69,11 +73,11 @@ body 					 { background:#000; overflow:hidden; }
 
 /*nav ul li a {text-decoration:none;color:#555;}*/
 
-#toolbar {position:absolute;left:0px;top:0px; width:200px; z-index:9000000; background:rgba(255,255,255,0.1); height:100%; color:#999;}
+#toolbar {position:absolute;right:0px;top:0px; width:200px; z-index:9000000; background:rgba(255,255,255,0.1); height:100%; color:#999;}
 
-#toolbar ul.options { width:1000px; position:absolute; left:-300px; top:600px; transform: rotate(90deg);-ms-transform: rotate(90deg); -webkit-transform: rotate(90deg); }
-#toolbar ul.options li {display:inline-block; float:left; margin-right:20px; padding:10px 25px; }
-#toolbar ul.options li.selected { background:rgba(255,255,255,0.1); }
+#toolbar ul.options { display:none; width:1000px; position:absolute; left:-300px; top:600px; transform: rotate(90deg);-ms-transform: rotate(90deg); -webkit-transform: rotate(90deg); }
+/*#toolbar ul.options li {display:inline-block; float:left; margin-right:20px; padding:10px 25px; }*/
+/*#toolbar ul.options li.selected { background:rgba(255,255,255,0.1); }*/
 
 .selector {position:absolute;left:0px;top:0px;height:100%; width:100%; color:#999;}
 
@@ -86,6 +90,8 @@ body 					 { background:#000; overflow:hidden; }
 .selector .toggles, .selector .nav {text-align:center;}
 .selector .toggles a, .selector .nav a {font-size:8pt;text-transform:uppercase;cursor:pointer;padding:15px 10px;margin:3px 3px;display:inline-block;}
 
+/*#toolbar {display:none;}*/
+
 #play-queue.active { background:green;color:#fff; }
 #stop-queue:hover {background:#111;}
 #shuffle.active { background:#444;; color: yellow; }
@@ -93,11 +99,23 @@ body 					 { background:#000; overflow:hidden; }
 .selector #current {font-size:30pt;color:#999;text-align:center;position:absolute;bottom:0px;left:0px;width:100%;}
 
 body::-moz-selection{
-background-color:Transparent;
-}
-
-::selection {
 	background-color:Transparent;
 }
 
-/*#master {display:none;}{}*/
+*::selection {
+	background-color:Transparent;
+}
+
+* {
+	-webkit-user-select: none;
+}
+
+#clock { width:auto; margin:0 10px; height:13px; border:1px solid rgba(255,255,255,0.15); padding:4px; position:relative; }
+
+#clock .progress { position:absolute; left:0px; top:0px; bottom:0px; display:block; background:rgba(255,255,255,0.3) }
+
+/*#master, #toolbar {display:none;}{}*/
+	
+/*#toolbar { display:none; }*/
+
+#sliders { display:none; }
