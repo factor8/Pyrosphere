@@ -480,15 +480,15 @@ void nextFrame(){
 		
     if(loopCount > loopThresh){
 			
-			Serial.println("<=== Repeating! ===>");
-						
-			delay(1000);flash();delay(100);flash();delay(100);flash();delay(1000);
+			// Serial.println("<=== Repeating! ===>");						
+			// delay(1000);flash();delay(100);flash();delay(100);flash();delay(1000);
 			
 			//// CURATING PATTERNS - LEAVE THESE OFF FOR NOW ///
-			// if 				(controlMode == 0) 	{ randomAnimation(); }
-			// else if 	(controlMode == 1) 	{ nextPattern(); 	}
+			if 				(controlMode == 0) 	{ randomAnimation(); }
+			else if 	(controlMode == 1) 	{ nextPattern(); 	}
 			
 			loopCount = 0;
+			Serial.flush();
     } else {
       loopCount++;
     }

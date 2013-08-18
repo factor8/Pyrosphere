@@ -3,7 +3,7 @@ TODO
 
 Make happy face pattern!!
 
-Do we want the mode change to alter the defaults interval and duration?
+Clear Serial Buffer
 
 Reconfigure and reconcile Autopilot / √ Random animation settings ... Almost √
 Reconfigure Modeselektor / setMode so that mode changes also reconfigure basic settings as necessary ... Almost √
@@ -52,7 +52,7 @@ x remove
 31	Random Buildup Up Down |
 32	√ Nomadic Inch Worm
 35	+ Centered Horizontal Tracers Opposed | Opposing Tracers 2
-38	~ Writing Sexy
+3	 Writing Sexey
 39 	X CHECK THIS ONE AGAIN AFTER UPLOAD.
 41	√ Ring-Around-Them-Panty-Hoesies
 42	√ Plateau | Full and Half Tones Global
@@ -84,13 +84,20 @@ x remove
 171	* Bright Alternating Set 
 172	*+wandering westward
 	
+280?? 
+281???
+306?	
+	
 == Good For Sure	
 	
-	271
+	271 Fireflies
 	462
+	244
+	414 - Torus
+	
 == 	
 
-== DELETE ==
+== BAD ==
 
 
 ==
