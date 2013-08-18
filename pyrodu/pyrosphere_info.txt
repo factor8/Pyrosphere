@@ -3,12 +3,14 @@ TODO
 
 Make happy face pattern!!
 
-Reconfigure and reconcile Autopilot / Random animation settings
-Reconfigure Modeselektor / setMode so that mode changes also reconfigure basic settings as necessary
-Test disparaging nodedurations
-Make sure our 'active' flag placement is good. What should 'inactive' disable?
+Do we want the mode change to alter the defaults interval and duration?
 
-Set MAx and Min value duration and interval hard stops.
+Reconfigure and reconcile Autopilot / √ Random animation settings ... Almost √
+Reconfigure Modeselektor / setMode so that mode changes also reconfigure basic settings as necessary ... Almost √
+Test disparaging nodedurations.... seems to be working
+Make sure our 'active' flag placement is good. What should 'inactive' disable? √
+
+Set MAx and Min value duration and interval hard stops...
 
 ==
 

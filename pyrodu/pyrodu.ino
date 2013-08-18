@@ -583,6 +583,7 @@ void flameSustain(){
 
 	void setDuration(){
 	
+		// if (atoi(messageBuffer)) /// setup min max stops
 		frameDuration = atoi(messageBuffer);
 		resetMessageBuffer();
 		
@@ -663,24 +664,22 @@ void flameSustain(){
 		//This will update the global variables accordingly.
 		switch(m){
 			// Autopilot Random
-			case 0: 			
-				controlMode = 0;   		
-				frameInterval = DEFAULT_FRAME_INTERVAL;
-				frameDuration = DEFAULT_FRAME_DURATION;
+			case 0: 			controlMode = 0;   		
+				// frameInterval = DEFAULT_FRAME_INTERVAL;
+				// frameDuration = DEFAULT_FRAME_DURATION;
 				
 				break; // Off.
 
 			// Autopilot Progressive	
-			case 1: 			
-				controlMode = 1;   		
-				frameInterval = DEFAULT_FRAME_INTERVAL;
-				frameDuration = DEFAULT_FRAME_DURATION;
+			case 1: 			controlMode = 1;   		
+				// frameInterval = DEFAULT_FRAME_INTERVAL;
+				// frameDuration = DEFAULT_FRAME_DURATION;
 				
 				break; 
 
 			// Valve Control	
 			case 2:  			controlMode = 2;  		
-				frameDuration = MAX_FRAME_DURATION;
+				// frameDuration = MAX_FRAME_DURATION;
 				break; 
 
 			case 3:  			controlMode = 3;  		
