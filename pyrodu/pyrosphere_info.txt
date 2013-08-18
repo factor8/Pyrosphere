@@ -29,11 +29,65 @@ Switch VERSION #define to 2 for Arduino Mega w/ Ethernet SD reader.
 Pinmap is the same.
 	
 == PATTERNS	 ==
+
+√ awesome
+* good
+~ soso
+
++ component
+	fix
+x remove
+
+00 	Fire Down Test Pattern
+15 	Progressive, Lowlight | Nomadic Propeller
+16 	~ Wandering Pixel, Topflash, | Single
+18	+ Horizontal Ring wiping vertically up and down | Ring 1 Hz
+19	√ NEXUS | We should offset this one so that it moves around the sphere
+20	Oscillating Rings Cross | Ring 2 hz vrt
+26	+ Single Spiral | Horizontal Spiral 1 	
+27	+ Single Spiral | Horizontal Spiral 2 
+28	+	Single Spiral | Horizontal Spiral 3
+29	+ Single Spiral | Horizontal Spiral 4 	
+30	+	Single Spiral | Horizontal Spiral 5
+31	Random Buildup Up Down |
+32	√ Nomadic Inch Worm
+35	+ Centered Horizontal Tracers Opposed | Opposing Tracers 2
+38	~ Writing Sexy
+39 	X CHECK THIS ONE AGAIN AFTER UPLOAD.
+41	√ Ring-Around-Them-Panty-Hoesies
+42	√ Plateau | Full and Half Tones Global
+44	√ Wanderer Progressive | Connect the Dots
+45	| Inch Worm 2
+47	+ Vertically alternating horizontal wring Repeats | Wobbly Ring
+48	~ Oscillating Oval Horizontal | Travel by Boat
+49	√ Top Flash, Traveling Triangle repeats musical
+50	+ Traveling Triangle
+51	+ Centered Horizontal Tracers Opposed | Opposing Tracers 2
+53	√ Matrix Brain Probe
+54	√ Growing Fire Wall Around the world eastward Progressive
+57	* Plateau Horizontal Vertically Centered Rings
+60	x
+67 	x
+68	* Doin My Own Thing!
+71	Tiny Nomadic Triangle.
+79 - 125	x
+126	~ exploding ring
+127	- 135
+141	~+ Top Ring Pulse
+142-148 x
+149 + Breakdown Pulse Eastward
+150-157 x
+159 *+Diagonal Eastward Swipe
+160 √+ Rolling Ring Westward
+164 * Bright | Ring Collide Vertical 
+169	√+ unidirectional tilted southwestward ring
+171	* Bright Alternating Set 
+172	*+wandering westward
 	
 == Good For Sure	
 	
-	
-	
+	271
+	462
 == 	
 
 == DELETE ==

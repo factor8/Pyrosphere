@@ -64,7 +64,7 @@ long 				frameDuration 				=	DEFAULT_FRAME_DURATION;              // Time a give
 // long 				chilloutFrameDuration = 500; 							//The duration of the flame.
 
 // Control Mode
-int 				controlMode 					= 0; 								//default: Auto Random;
+int 				controlMode 					= 1; 								//default: Auto Random; /// Decide where we start.
 //Frame
 Frame 			frameBuffer;
 char 				messageBuffer[8];  												// Can't forsee more than 8c*s as long as we stay away from long pattern titles.
@@ -479,9 +479,16 @@ void nextFrame(){
 	if(updateFrame()){
 		
     if(loopCount > loopThresh){
-			if 				(controlMode == 0) 	{ randomAnimation(); }
-			else if 	(controlMode == 1) 	{ nextPattern(); 	}
-      loopCount = 0;
+			
+			Serial.println("<=== Repeating! ===>");
+						
+			delay(1000);flash();delay(100);flash();delay(100);flash();delay(1000);
+			
+			//// CURATING PATTERNS - LEAVE THESE OFF FOR NOW ///
+			// if 				(controlMode == 0) 	{ randomAnimation(); }
+			// else if 	(controlMode == 1) 	{ nextPattern(); 	}
+			
+			loopCount = 0;
     } else {
       loopCount++;
     }
@@ -667,14 +674,14 @@ void flameSustain(){
 			case 0: 			controlMode = 0;   		
 				// frameInterval = DEFAULT_FRAME_INTERVAL;
 				// frameDuration = DEFAULT_FRAME_DURATION;
-				
+				loopCount = 0;
 				break; // Off.
 
 			// Autopilot Progressive	
 			case 1: 			controlMode = 1;   		
 				// frameInterval = DEFAULT_FRAME_INTERVAL;
 				// frameDuration = DEFAULT_FRAME_DURATION;
-				
+				loopCount = 0;
 				break; 
 
 			// Valve Control	
