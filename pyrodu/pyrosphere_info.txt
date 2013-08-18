@@ -1,10 +1,14 @@
 TODO
 ====
 
+Make happy face pattern!!
+
 Reconfigure and reconcile Autopilot / Random animation settings
 Reconfigure Modeselektor / setMode so that mode changes also reconfigure basic settings as necessary
 Test disparaging nodedurations
 Make sure our 'active' flag placement is good. What should 'inactive' disable?
+
+Set MAx and Min value duration and interval hard stops.
 
 ==
 
@@ -57,8 +61,23 @@ Pinmap is the same.
 
 	Slow
 
+====
+
+0 - Autopilot
+	Autopilot implies random pattern.
+	
+	
+1 - Master Pattern Controller
+	Pattern Mode which implies non random pattern controlled by tablet. or just readDir next.
+	Access to change Interval and Duration and navigate patterns logically
+	Progresses incrementally through patterns?
+	
+2 - Valve Control
+	
+3 - 
 
 
 
 
 	ALL
+	
