@@ -485,10 +485,9 @@ void nextFrame(){
 			
 			//// CURATING PATTERNS - LEAVE THESE OFF FOR NOW ///
 			if 				(controlMode == 0) 	{ randomAnimation(); }
-			else if 	(controlMode == 1) 	{ nextPattern(); 	}
+			else if 	(controlMode == 1) 	{ nextPattern(); 	}			
 			
 			loopCount = 0;
-			Serial.flush();
     } else {
       loopCount++;
     }
