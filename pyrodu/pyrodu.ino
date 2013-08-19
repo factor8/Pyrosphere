@@ -801,14 +801,17 @@ void initFrameBuffer(){
 void nextPattern() {	
 
 	if(root.readDir(&directory)<=0){
-	
+		
+		Serial.print("Rewinding..."); 
+		
     root.rewind();
     root.readDir(&directory);
 		
   }
+
 	SdFile::dirName(directory, currentFile);
 	Serial.print("Next Pattern..."); Serial.println(currentFile);    
-
+	changePattern(currentFile);
   
 	
   //Stub 
