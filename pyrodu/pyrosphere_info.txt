@@ -84,6 +84,9 @@ x remove
 171	* Bright Alternating Set 
 172	*+wandering westward
 	
+	
+274 Has a lot of off time at the end.	
+	
 280?? 
 281???
 306?	
