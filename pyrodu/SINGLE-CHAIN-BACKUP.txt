@@ -9,19 +9,11 @@
 #define VERSION 2
 
 // Pin values for talking to shift registers
-#define 		DATA_PIN1 								7 // Data pin for serial communication to shift registers
-#define 		LATCH_PIN1 								2 // Latch pin for serial communication to shift registers
-#define 		CLOCK_PIN1 								6 // Clock pin for serial communication to shift registers
-
-#define 		DATA_PIN2 								13 // Data pin for serial communication to shift registers
-#define 		LATCH_PIN2 								8 // Latch pin for serial communication to shift registers
-#define 		CLOCK_PIN2 								12 // Clock pin for serial communication to shift registers
-
-
+#define 		DATA_PIN 									7 // Data pin for serial communication to shift registers
+#define 		LATCH_PIN 								2 // Latch pin for serial communication to shift registers
+#define 		CLOCK_PIN 								6 // Clock pin for serial communication to shift registers
 // General Definitions            		
 #define 		TOTAL_REGISTERS 					12 // Total registers (chips, bytes) being talked to
-#define 		LINE1											47 // Total chips in the first serial chain.
-#define 		LINE2											44 // Total chips in the second serial chain.
 #define 		TOTAL_NODES 							96 // 0 -  85 makes 86 nodes
 #define 		FILE_NAME_SIZE 						12 // 8.3 filenames need 12 char to define them
                                   		
@@ -202,13 +194,9 @@ void randomAnimation(){
 
 void setup(){                
 	
-  pinMode(	DATA_PIN1, 	OUTPUT	);
-  pinMode(	LATCH_PIN1, 	OUTPUT	);
-  pinMode(	CLOCK_PIN1, 	OUTPUT	);
-
-  pinMode(	DATA_PIN2, 	OUTPUT	);
-  pinMode(	LATCH_PIN2, 	OUTPUT	);
-  pinMode(	CLOCK_PIN2, 	OUTPUT	);
+  pinMode(	DATA_PIN, 	OUTPUT	);
+  pinMode(	LATCH_PIN, 	OUTPUT	);
+  pinMode(	CLOCK_PIN, 	OUTPUT	);
 	
 	delay(1000);
   
@@ -796,19 +784,11 @@ void flameSustain(){
 
 // Send the frameBuffer (buffer) to the shift registers
 void ignite(){
-  digitalWrite(LATCH_PIN1, LOW);
-	digitalWrite(LATCH_PIN2, LOW);
+  digitalWrite(LATCH_PIN, LOW);
   for(int i = 0; i < TOTAL_REGISTERS; i++){
-    if (i < LINE1) {
-			// LINE1
-			shiftOut(DATA_PIN1, CLOCK_PIN1, MSBFIRST, frameBuffer.frameChunk[i]);
-		} else {
-			// ELSE LINE2
-			shiftOut(DATA_PIN2, CLOCK_PIN2, MSBFIRST, frameBuffer.frameChunk[i-LINE1]);
-		}
+    shiftOut(DATA_PIN, CLOCK_PIN, MSBFIRST, frameBuffer.frameChunk[i]);
   }
-  digitalWrite(LATCH_PIN1, HIGH);
-	digitalWrite(LATCH_PIN2, HIGH);
+  digitalWrite(LATCH_PIN, HIGH);
 }
   
 void initFrameBuffer(){
@@ -887,17 +867,17 @@ void toggleDebug(char *val) {
 */
 
 void flash(){
-	digitalWrite(LATCH_PIN1, LOW);
+	digitalWrite(LATCH_PIN, LOW);
   for(int i = 0; i < TOTAL_REGISTERS; i++){
-    shiftOut(DATA_PIN1, CLOCK_PIN1, MSBFIRST, B11111111);
+    shiftOut(DATA_PIN, CLOCK_PIN, MSBFIRST, B11111111);
   }
-  digitalWrite(LATCH_PIN1, HIGH);
+  digitalWrite(LATCH_PIN, HIGH);
 	delay(400);
-	digitalWrite(LATCH_PIN1, LOW);
+	digitalWrite(LATCH_PIN, LOW);
   for(int i = 0; i < TOTAL_REGISTERS; i++){
-    shiftOut(DATA_PIN1, CLOCK_PIN1, MSBFIRST, B00000000);
+    shiftOut(DATA_PIN, CLOCK_PIN, MSBFIRST, B00000000);
   }
-  digitalWrite(LATCH_PIN1, HIGH);
+  digitalWrite(LATCH_PIN, HIGH);
 }
 
 /*
