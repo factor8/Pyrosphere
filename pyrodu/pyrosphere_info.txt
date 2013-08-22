@@ -1,16 +1,47 @@
 TODO
 ====
 
+Pave new serial route from Rpi to Arduino
+Configure Box so it's easy to update
+Duplicate Rpi Brains
+
+
 Make happy face pattern!!
 
-Clear Serial Buffer
+Clear Serial Buffer?
 
 Reconfigure and reconcile Autopilot / √ Random animation settings ... Almost √
-Reconfigure Modeselektor / setMode so that mode changes also reconfigure basic settings as necessary ... Almost √
 Test disparaging nodedurations.... seems to be working
 Make sure our 'active' flag placement is good. What should 'inactive' disable? √
 
+
 Set MAx and Min value duration and interval hard stops...
+
+
+
+==
+
+=== CHECKLIST
+
+Raspberry Pis
+Arduinos
+Leap Motion
+Mac Mini
+Routers
+Access Point
+Box
+
+
+Pyrosphere Model
+Serial Cable
+Extra USB Power outlets (Raspberry Pi Micro and Arduino Regular)
+Extra Ethernet Cables
+USB Cables
+USB Hub
+Duplicate Raspberry Pi Brains
+
+Do we need a mouse, keyboard and display? yeah probably.
+
 
 ==
 
@@ -38,7 +69,10 @@ edit app.js: line 42
 sudo node app.js
 	
 	GIT STUFF
-	git remote add upstream https://github.com/dskvr/Pyrosphere/
+	sudo git remote -v
+	sudo git remote add upstream https://github.com/dskvr/Pyrosphere/
+	sudo git fetch upstream
+	sudo git merge upstream/master
 	
 == PATTERNS	 ==
 

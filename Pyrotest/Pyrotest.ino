@@ -7,7 +7,7 @@
 #define SRCLK_Pin 6 //CLOCK
 
 #define NUM_REGISTERS 12 //how many registers are in the chain
-#define TOTAL_NODES 90
+#define TOTAL_NODES 91
 
 uint32_t sustain = 50;
 uint32_t frequency = 100;
@@ -22,9 +22,10 @@ Shifter shifter(SER_Pin, RCLK_Pin, SRCLK_Pin, NUM_REGISTERS);
 void setup(){
 	shifter.clear();
 	shifter.write();
-  Serial.begin(115200);
 
-	pepRally(); // Fire down and Fire up
+  Serial.begin(4800);
+
+	// pepRally(); // Fire down and Fire up
  	delay(1000);
 }
 
@@ -32,9 +33,12 @@ void loop(){
    // shifter.setAll(LOW); //Set all pins on the chain low		
 		// pepRally();
 
-		// fire(0);	
+		// fire(61);
+		// fire(64);	
 		fireUp();
 		delay(100);
+		
+		// fireRange(65,91);
 
 		// funMode();
 		// shifter.clear();
@@ -69,12 +73,12 @@ void loop(){
  // delay(1000);  
 }
 
-// void fireRange(uint8_t from,uint8_t to) {
-// for (int p=from;p>to;p++) { /// may need adjusting.
-// 		fire(p);						
-// 		delay(frequency);
-// }
-// 
+void fireRange(uint16_t from,uint16_t to) {
+for (int p=from;p<=to;p++) { /// may need adjusting.
+		fire(p);						
+		delay(frequency);
+}
+}
 
 void funMode() {
 	
