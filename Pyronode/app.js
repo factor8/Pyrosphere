@@ -41,7 +41,7 @@ http.createServer(app).listen(app.get('port'), function(){
 
 // /dev/tty.usbmodem1411 -- Mac OS
 // ttyACM0 -- Raspberry Pi
-var serial = new serial("ttyACM0", {	
+var serial = new serial("/dev/tty.usbmodem1411", {	
   baudrate: 115200
 });
 

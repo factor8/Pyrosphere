@@ -13,16 +13,16 @@
 #define 		LATCH_PIN1 								2 // Latch pin for serial communication to shift registers
 #define 		CLOCK_PIN1 								6 // Clock pin for serial communication to shift registers
 
-#define 		DATA_PIN2 								13 // Data pin for serial communication to shift registers
-#define 		LATCH_PIN2 								8 // Latch pin for serial communication to shift registers
-#define 		CLOCK_PIN2 								12 // Clock pin for serial communication to shift registers
+// #define 		DATA_PIN2 								13 // Data pin for serial communication to shift registers
+// #define 		LATCH_PIN2 								8 // Latch pin for serial communication to shift registers
+// #define 		CLOCK_PIN2 								12 // Clock pin for serial communication to shift registers
 
 
 // General Definitions            		
-#define 		NUM_REGISTERS 						12 // Total registers (chips, bytes) being talked to
-#define 		LINE1											48 // Total chips in the first serial chain.
-#define 		LINE2											43 // Total chips in the second serial chain.
-#define 		TOTAL_NODES 							91 // 0 -  85 makes 86 nodes
+#define 		NUM_REGISTERS 					12 // Total registers (chips, bytes) being talked to
+#define 		LINE1											47 // Total chips in the first serial chain.
+#define 		LINE2											44 // Total chips in the second serial chain.
+#define 		TOTAL_NODES 							96 // 0 -  85 makes 86 nodes
 #define 		FILE_NAME_SIZE 						12 // 8.3 filenames need 12 char to define them
                                   		
 // Interval Limits                		
@@ -31,19 +31,17 @@
 #define			MAX_FRAME_INTERVAL 				 10000
 // Duration Limits                		    
 #define 		MIN_FRAME_DURATION 				 10
-#define 		DEFAULT_FRAME_DURATION		 30 /// Final Decision? What should this be?
-#define 		MAX_FRAME_DURATION 				 100
+#define 		DEFAULT_FRAME_DURATION		 75 /// Final Decision? What should this be?
+#define 		MAX_FRAME_DURATION 				 750
 
 //Holds the current frame? ...Don't think this is used anywhere. 
 typedef struct _frame {
   int8_t frameChunk[NUM_REGISTERS];
 } Frame;
-
 //Some curious looking code without an explaination. Magic.
 #define 		nodeOnMacro( FRAME, FLAMENUM )  ( (FRAME).frameChunk[((uint8_t)(FLAMENUM)) >> 3] |= _BV((FLAMENUM & 0x07 ) ) )
 #define 		nodeOffMacro( FRAME, FLAMENUM ) ( (FRAME).frameChunk[((uint8_t)(FLAMENUM)) >> 3] &= ~_BV((FLAMENUM & 0x07 ) ) )
-#define 		isFlameOn( FRAME, FLAMENUM ) 		( (FRAME).frameChunk[((uint8_t)(FLAMENUM)) >> 3] & _BV((FLAMENUM & 0x07 ) ) )
-
+#define 		isFlameOn( FRAME, FLAMENUM ) ( (FRAME).frameChunk[((uint8_t)(FLAMENUM)) >> 3] & _BV((FLAMENUM & 0x07 ) ) )
 // For SD library interfacing
 Sd2Card 		card;
 SdVolume 		volume;
@@ -88,13 +86,12 @@ boolean 		verbose 							= false;						// Show all the schtuff!
 
 // This array maps a node number to a register and bit. It won't change during the course of the program
 // PROTOSPHERE
-const 			prog_int8_t mappingArray_P[TOTAL_NODES] PROGMEM = { 31, 74, 29, 90, 37, 33, 44, 34, 67, 76, 80, 30, 93, 75, 20, 35, 21, 65, 41, 42, 59, 69, 58, 85, 52, 53, 95, 89, 79, 39, 19, 87, 8, 22, 46, 32, 70, 66, 61, 18, 36, 86, 83, 77, 73, 84, 28, 94, 9, 11, 55, 68, 57, 63, 60, 26, 38, 43, 15, 12, 91, 72, 88, 16, 92, 64, 47, 51, 81, 71, 62, 50, 49, 27, 78, 10, 17, 14, 13, 82, 40, 45, 54, 56, 23, 48, 0, 1, 2, 3, 4, 5, 6, 7, 24, 25 };
-// const 			prog_int8_t mappingArray_P[TOTAL_NODES] PROGMEM = { 31, -1, 74, 29, 90, 37, 33, 44, 34, 67, 76, 80, 30, 93, 75, 20, 35, 21, 65, 41, 42, 59, 69, 58, 85, 52, 53, 95, 89, 79, 39, 19, 87, 8, 22, 46, 32, 70, 66, 61, 18, 36, 86, 83, 77, 73, 84, 28, 94, 9, 11, 55, 68, 57, 63, 60, 26, 38, 43, 15, 12, 91, 72, 88, 16, 92, 64, 47, 51, 81, 71, 62, 50, 49, 27, 78, 10, 17, 14, 13, 82, 40, 45, 54, 56, 23, 48, 0, 1, 2, 3, 4, 5, 6, 7, 24};
+// const 			prog_int8_t mappingArray_P[TOTAL_NODES] PROGMEM = { 31, 74, 29, 90, 37, 33, 44, 34, 67, 76, 80, 30, 93, 75, 20, 35, 21, 65, 41, 42, 59, 69, 58, 85, 52, 53, 95, 89, 79, 39, 19, 87, 8, 22, 46, 32, 70, 66, 61, 18, 36, 86, 83, 77, 73, 84, 28, 94, 9, 11, 55, 68, 57, 63, 60, 26, 38, 43, 15, 12, 91, 72, 88, 16, 92, 64, 47, 51, 81, 71, 62, 50, 49, 27, 78, 10, 17, 14, 13, 82, 40, 45, 54, 56, 23, 48, 0, 1, 2, 3, 4, 5, 6, 7, 24, 25 };
 // const 			prog_int8_t mappingArray_P[TOTAL_NODES] PROGMEM = { 25, 24, 7, 6, 5, 4, 3, 2, 1, 0, 48, 23, 56, 54, 45, 40, 82, 13, 14, 17, 10, 78, 27, 49, 50, 62, 71, 81, 51, 47, 64, 92, 16, 88, 72, 91, 12, 15, 43, 38, 26, 60, 63, 57, 68, 55, 11, 9, 94, 28, 84, 73, 77, 83, 86, 36, 18, 61, 66, 70, 32, 46, 22, 8, 87, 19, 39, 79, 89, 95, 53, 52, 85, 58, 69, 59, 42, 41, 65, 21, 35, 20, 75, 93, 30, 80, 76, 67, 34, 44, 33, 37, 90, 29, 74, 31 }; 
 
 // PYROSPHERE REVERSED
-// const 			prog_int8_t mappingArray_P[TOTAL_NODES] PROGMEM = {0,-1,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89};	
-// const 			prog_int8_t mappingArray_P[TOTAL_NODES] PROGMEM = {90,-1,89,88,87,86,85,84,83,82,81,80,79,78,77,76,75,74,73,72,71,70,69,68,67,66,65,64,63,62,61,60,59,58,57,56,55,54,53,52,51,50,49,48,47,46,45,44,43,42,41,40,39,38,37,36,35,34,33,32,31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1};	
+// const 			prog_int8_t mappingArray_P[TOTAL_NODES] PROGMEM = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95};	
+const 			prog_int8_t mappingArray_P[TOTAL_NODES] PROGMEM = {95,94,93,92,91,90,89,88,87,86,85,84,83,82,81,80,79,78,77,76,75,74,73,72,71,70,69,68,67,66,65,64,63,62,61,60,59,58,57,56,55,54,53,52,51,50,49,48,47,46,45,44,43,42,41,40,39,38,37,36,35,34,33,32,31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0};	
 
 boolean updateFrame(){
 		
@@ -214,9 +211,9 @@ void setup(){
   pinMode(	LATCH_PIN1, 	OUTPUT	);
   pinMode(	CLOCK_PIN1, 	OUTPUT	);
 
-  pinMode(	DATA_PIN2, 	OUTPUT	);
-  pinMode(	LATCH_PIN2, 	OUTPUT	);
-  pinMode(	CLOCK_PIN2, 	OUTPUT	);
+  // pinMode(	DATA_PIN2, 	OUTPUT	);
+  // pinMode(	LATCH_PIN2, 	OUTPUT	);
+  // pinMode(	CLOCK_PIN2, 	OUTPUT	);
 	
 	delay(1000);
   
@@ -337,13 +334,13 @@ uint8_t 						readMode 				= 0; 						//Wait
 void loop() 
 {
 	
-	// if(!status) {
-	// 	Serial.println("ReMounting...");
-	// 	flash();
-	// 	status = mount();
-	// 	delay(5000);
-	// 	return;
-	// } 
+	if(!status) {
+		Serial.println("ReMounting...");
+		flash();
+		status = mount();
+		delay(5000);
+		return;
+	}
 
   now = millis();       	// This moment is beautiful.
 	
@@ -629,8 +626,8 @@ void flameSustain(){
 
 		if (valveID < TOTAL_NODES) {
 			if (debug) {
-				Serial.print("Setting Valve On: ");
- 					Serial.println(valveID);			
+				// Serial.print("Setting Valve On: ");
+				// Serial.println(valveID);			
 			}
 
 			if (controlMode != 2) {
@@ -804,39 +801,21 @@ void flameSustain(){
 
 // Send the frameBuffer (buffer) to the shift registers
 void ignite(){
-
-	  digitalWrite(LATCH_PIN1, LOW);
-		// digitalWrite(LATCH_PIN2, LOW);
-	  for(int i = 0; i < NUM_REGISTERS; i++){
-	    // if (i < LINE1) {
-				// LINE1
-				shiftOut(DATA_PIN1, CLOCK_PIN1, MSBFIRST, frameBuffer.frameChunk[i]);
-			// } else {
-				// ELSE LINE2
-	// /			shiftOut(DATA_PIN2, CLOCK_PIN2, MSBFIRST, frameBuffer.frameChunk[i-LINE1]);
-			// }
-	  }
-		// for (foo = 0; foo<10000; foo++);
-	  digitalWrite(LATCH_PIN1, HIGH);
-		// for (foo = 0; foo<10000; foo++);
-
-
-	// DOUBLE TIME
-	// // volatile int foo;
-	//   digitalWrite(LATCH_PIN1, LOW);
+	volatile int foo;
+  digitalWrite(LATCH_PIN1, LOW);
 	// digitalWrite(LATCH_PIN2, LOW);
-	//   for(int i = 0; i < NUM_REGISTERS; i++){
-	//     if (i < 6) {
-	// 		// LINE1
-	// 		shiftOut(DATA_PIN1, CLOCK_PIN1, MSBFIRST, frameBuffer.frameChunk[i]);
-	// 	} else {
-	// 		// ELSE LINE2
-	// 		shiftOut(DATA_PIN2, CLOCK_PIN2, MSBFIRST, frameBuffer.frameChunk[i-6]);
-	// 	}
-	//   }
-	// // for (foo = 0; foo<10000; foo++);
-	//   digitalWrite(LATCH_PIN1, HIGH);
-	// // for (foo = 0; foo<10000; foo++);
+  for(int i = 0; i < NUM_REGISTERS; i++){
+    // if (i < LINE1) {
+			// LINE1
+			shiftOut(DATA_PIN1, CLOCK_PIN1, MSBFIRST, frameBuffer.frameChunk[i]);
+		// } else {
+			// ELSE LINE2
+// /			shiftOut(DATA_PIN2, CLOCK_PIN2, MSBFIRST, frameBuffer.frameChunk[i-LINE1]);
+		// }
+  }
+	for (foo = 0; foo<10000; foo++);
+  digitalWrite(LATCH_PIN1, HIGH);
+	for (foo = 0; foo<10000; foo++);
 	// digitalWrite(LATCH_PIN2, HIGH);
 }
   
@@ -912,7 +891,7 @@ void toggleDebug(char *val) {
 
 
 /*
-	Flashes all the torches on the pyrosphere once. (for 400 milliseconds)
+	Flashes all the torches on the pirosphere once. (for 400 milliseconds)
 */
 
 void flash(){
@@ -1010,9 +989,12 @@ void flash(){
 
 void nodeOn(int8_t nodeNum){
 	
+	if (nodeNum == 2) return;
+	
   int8_t mappedValue = pgm_read_byte(&mappingArray_P[nodeNum]);
   nodeTimeStamps[nodeNum] = millis();
-  nodeOnMacro(frameBuffer, mappedValue);
+  nodeOnMacro(frameBuffer, mappedValue);	
+
 }
 
 
@@ -1034,10 +1016,9 @@ void shiftOut(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder, uint8_t val)
 		else	
 			digitalWrite(dataPin, !!(val & (1 << (7 - i))));
 			
-		for (foo=0; foo <300; foo++);
+		for (foo=0; foo <10000; foo++);
 		
 		digitalWrite(clockPin, HIGH);
-		for (foo=0; foo <100; foo++);
 		digitalWrite(clockPin, LOW);		
 	}
 }

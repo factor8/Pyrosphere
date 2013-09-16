@@ -17,8 +17,29 @@ Make sure our 'active' flag placement is good. What should 'inactive' disable? â
 
 Set MAx and Min value duration and interval hard stops...
 
+== NETGRAT ROUTER ==
+ID: 				Sockets
+PW:					betafish
+IP: 				192.168.1.1
+AD: 				admin	
+PW: 				vortexrings4D
+
+== UBNT ACCESSPOINT ==
+ID: 				SSID
+PW: 				vortexrings4D
+IP: 				192.168.1.252
+AD:					admin
+PW: 				vortexrings (field limits characters, type until it stops)
+
+== ARDUINO == 
 
 
+
+
+== RASPBERRY PI ==
+IP: 				192.168.1.111
+UI:					192.168.1.111:8080
+NODE:				192.168.1.111:8080
 ==
 
 === CHECKLIST
