@@ -23,74 +23,111 @@ const char* ssid= "LEDpaint";
 const char* pass= "betafish";
 const char* host= "pyrosphere";
 
-// Websocket Event Handler WSEH
-void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length) {
+// // Websocket Event Handler WSEH
+// void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length) {
+
+//   switch(type) {
+//     case WStype_DISCONNECTED:
+//         Serial.printf("[%u] Disconnected!\n", num);
+//         break;
+//     case WStype_CONNECTED: {
+//         IPAddress ip = webSocket.remoteIP(num);
+//         Serial.printf("[%u] Connected from %d.%d.%d.%d url: %s\n", num, ip[0], ip[1], ip[2], ip[3], payload);
+
+//         // send message to client
+//         webSocket.sendTXT(num, "Connected");
+//     } 
+//         break;
+//     case WStype_TEXT:
+//         // if (DEBUG) Serial.printf("[%u] get Text: %s\n", num, payload);
+
+//         if(payload[0] == '0') {
+//             burn();
+//             webSocket.sendTXT(num, "1");
+//           }
+//         if(payload[0] == '3') {rapid();}        
+//         // if(payload[0] == '!') {
+          
+//         //   if(payload[1] == '>'){
+//         //     forwardSelector();
+//         //     Serial.println("forward selector");
+//         //   } else if(payload[1] == '<'){
+//         //     backSelector();
+//         //     Serial.println("backward selector");
+//         //   } else {
+//         //     /// not optimized... char to int is what we need
+//         //     uint8_t s = (uint8_t) strtol((const char *) &payload[1], NULL, 10);
+//         //     setSelector(s);    
+//         //   }
+          
+//         // }
+//         if(payload[0] == '@') {
+//             uint8_t f = (uint8_t) strtol((const char *) &payload[1], NULL, 10);
+//             setFrequency(f);
+//             webSocket.sendTXT(num, "Duration set to "+String(duration));
+//         }
+//         // if(payload[0] == '#') {
+//         //     uint8_t b = (uint8_t) strtol((const char *) &payload[1], NULL, 10);
+//         //     setBrightness(b);            
+//         //     webSocket.sendTXT(num, "Brightness set to "+String(brightness));
+//         // }
+//         // if(payload[0] == 'P') {
+//         //     uint32_t p = (uint32_t) strtol((const char *) &payload[1], NULL, 16);
+//         //     Serial.println(p);
+
+//         //     updatePrimary(p);
+//         //     webSocket.sendTXT(num, "Primary updated");
+//         // }
+        
+//         // if(payload[0] == 'G') {     
+//         //   /// Probably replace this with a switch statement. 
+//         //   if(payload[1]=='!'){
+//         //     // send message to client
+//         //     Serial.printf("Get selector request...Replying: %d\n",selector);
+//         //     webSocket.sendTXT(num, String(selector));    
+//         //   }
+//         // }
+//         break;
+//   }
+
+// }
+
+void webSocketClientEvent(WStype_t type, uint8_t * payload, size_t lenght) {
 
   switch(type) {
-    case WStype_DISCONNECTED:
-        Serial.printf("[%u] Disconnected!\n", num);
-        break;
-    case WStype_CONNECTED: {
-        IPAddress ip = webSocket.remoteIP(num);
-        Serial.printf("[%u] Connected from %d.%d.%d.%d url: %s\n", num, ip[0], ip[1], ip[2], ip[3], payload);
-
-        // send message to client
-        webSocket.sendTXT(num, "Connected");
-    } 
-        break;
-    case WStype_TEXT:
-        // if (DEBUG) Serial.printf("[%u] get Text: %s\n", num, payload);
-
-        if(payload[0] == '0') {
-            burn();
-            webSocket.sendTXT(num, "1");
-          }
-        if(payload[0] == '1') {rapid();}        
-        // if(payload[0] == '!') {
-          
-        //   if(payload[1] == '>'){
-        //     forwardSelector();
-        //     Serial.println("forward selector");
-        //   } else if(payload[1] == '<'){
-        //     backSelector();
-        //     Serial.println("backward selector");
-        //   } else {
-        //     /// not optimized... char to int is what we need
-        //     uint8_t s = (uint8_t) strtol((const char *) &payload[1], NULL, 10);
-        //     setSelector(s);    
-        //   }
-          
-        // }
-        if(payload[0] == '@') {
-            uint8_t f = (uint8_t) strtol((const char *) &payload[1], NULL, 10);
-            setFrequency(f);
-            webSocket.sendTXT(num, "Duration set to "+String(duration));
-        }
-        // if(payload[0] == '#') {
-        //     uint8_t b = (uint8_t) strtol((const char *) &payload[1], NULL, 10);
-        //     setBrightness(b);            
-        //     webSocket.sendTXT(num, "Brightness set to "+String(brightness));
-        // }
-        // if(payload[0] == 'P') {
-        //     uint32_t p = (uint32_t) strtol((const char *) &payload[1], NULL, 16);
-        //     Serial.println(p);
-
-        //     updatePrimary(p);
-        //     webSocket.sendTXT(num, "Primary updated");
-        // }
+        case WStype_DISCONNECTED:
+            Serial.printf("[WSc] Disconnected!\n");
+            break;
+        case WStype_CONNECTED:
+            {
+                Serial.printf("[WSc] Connected to url: %s\n",  payload);
         
-        // if(payload[0] == 'G') {     
-        //   /// Probably replace this with a switch statement. 
-        //   if(payload[1]=='!'){
-        //     // send message to client
-        //     Serial.printf("Get selector request...Replying: %d\n",selector);
-        //     webSocket.sendTXT(num, String(selector));    
-        //   }
-        // }
-        break;
-  }
+          // send message to server when Connected
+                webSocket.sendTXT("Connected");
+            }
+            break;
+        case WStype_TEXT:
+            // Serial.printf("[WSc] get text: %s\n", payload);
+
+            // send message to server
+            if(payload[0] == '0') {
+              burn();
+              webSocket.sendTXT("1");
+            }
+            if(payload[0] == '3') {rapid();}        
+            
+            break;
+        case WStype_BIN:
+            Serial.printf("[WSc] get binary lenght: %u\n", lenght);
+            hexdump(payload, lenght);
+
+            // send data to server
+            // webSocket.sendBIN(payload, lenght);
+            break;
+    }
 
 }
+
 
 // #setup
 void setup()
@@ -134,18 +171,11 @@ void setup()
   }
   Serial.println("");
   Serial.print("Connected! IP address: ");
-  Serial.println(WiFi.localIP());
+  Serial.println(WiFi.localIP());  
 
-  MDNS.begin(host);
-  Serial.print("Open http://");
-  Serial.print(host);
-  Serial.println(".local/edit to see the file browser");
-  
-  httpUpdater.setup(&server);
-
-  // start webSocket server
-  webSocket.begin();
-  webSocket.onEvent(webSocketEvent);
+  // start webSocket server  
+  webSocket.begin("192.168.1.134",81);
+  webSocket.onEvent(webSocketClientEvent);
   
   //SERVER INIT
   //list directory

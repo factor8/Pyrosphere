@@ -41,39 +41,7 @@ const char* ssid= "LEDpaint";
 const char* pass= "betafish";
 const char* host= "pyrohoop";
 
-
-void webSocketClientEvent(WStype_t type, uint8_t * payload, size_t lenght) {
-
-  switch(type) {
-        case WStype_DISCONNECTED:
-            Serial.printf("[WSc] Disconnected!\n");
-            break;
-        case WStype_CONNECTED:
-            {
-                Serial.printf("[WSc] Connected to url: %s\n",  payload);
-        
-          // send message to server when Connected
-                pyrosphere.sendTXT("Connected");
-            }
-            break;
-        case WStype_TEXT:
-            Serial.printf("[WSc] get text: %s\n", payload);
-
-            // send message to server
-            if(payload[0] == '0') {trigger();}
-            if(payload[0] == '1') {Serial.printf("FIRED!\n");}                
-            
-            break;
-        case WStype_BIN:
-            Serial.printf("[WSc] get binary lenght: %u\n", lenght);
-            hexdump(payload, lenght);
-
-            // send data to server
-            // webSocket.sendBIN(payload, lenght);
-            break;
-    }
-
-}
+uint8_t pyrosphereSingle,pyrosphereModel;
 
 // Websocket Event Handler WSEH
 void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length) {
@@ -86,6 +54,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length
         IPAddress ip = webSocket.remoteIP(num);
         Serial.printf("[%u] Connected from %d.%d.%d.%d url: %s\n", num, ip[0], ip[1], ip[2], ip[3], payload);
 
+
+
         // send message to client
         webSocket.sendTXT(num, "Connected");
     } 
@@ -93,7 +63,11 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length
     case WStype_TEXT:
         // if (DEBUG) Serial.printf("[%u] get Text: %s\n", num, payload);
 
-        if(payload[0] == '0') {trigger();}
+        // Register Clients
+        if(payload[0] == 'P') { pyrosphereSingle = num; }
+        if(payload[0] == 'M') { pyrosphereModel = num; }
+
+        if(payload[0] == '0') {trigger();}        
         if(payload[0] == '1') {Serial.printf("FIRED!\n");}                
         // if(payload[0] == '!') {
           
@@ -190,11 +164,14 @@ void setup()
   Serial.print("Connected! IP address: ");
   Serial.println(WiFi.localIP());
 
-  MDNS.begin(host);
-  Serial.print("Open http://");
-  Serial.print(host);
-  Serial.println(".local/edit to see the file browser");
-  
+  if(MDNS.begin(host)) {
+      Serial.println("MDNS responder started");
+      MDNS.addService("http", "tcp", 80);
+      MDNS.addService("ws", "tcp", 81);
+  } else {
+      Serial.println("MDNS responder failed");
+  } 
+
   httpUpdater.setup(&server);
 
   // start webSocket server
@@ -236,8 +213,9 @@ void setup()
   server.begin();
   Serial.println("HTTP server started");
   
-  pyrosphere.begin("pyrosphere.local",81);
-  pyrosphere.onEvent(webSocketClientEvent);    
+  
+  // pyrosphere.begin("pyrosphere.local",81);
+  // pyrosphere.onEvent(webSocketClientEvent);
 
   // intervalCount = 1;
   interval = 0;
@@ -260,10 +238,10 @@ void loop() {
       newColor = ledEffect->p(i);            
       ledmeter->setPixelColor(i,newColor);
     }       
-    Serial.println(newColor);
     
     ledmeter->setPixelColor(pixelColor,0xFFFFFF);
     // ledmeter->show();
+
 
     // Did we shake?
     if (digitalRead(SHAKESWITCH)) {        
@@ -283,14 +261,12 @@ void loop() {
         score = true;
         scoreCount++;
 
-        if (scoreCount < 3) {
+        if (scoreCount < 3) {          
           trigger();  
         } else {
           triggerOnFire();
           scoreCount = 0;
-        }
-        
-      
+        }      
     }
 
     then = now;    
@@ -308,21 +284,20 @@ void loop() {
   }
   
   server.handleClient();
-  // webSocket.loop();
-  pyrosphere.loop();
+  webSocket.loop();  
 } 
 
 // Burn.
 void trigger() {
-    Serial.printf("%d HOOPTY!\n",millis());
-    pyrosphere.sendTXT("0");
-    // pyrosphereModel.sendTXT("0");
+    Serial.printf("%d HOOPTY!\n",millis());    
+    webSocket.sendTXT(pyrosphereSingle,"0");
+    webSocket.sendTXT(pyrosphereModel,"0");
 }
 
 void triggerOnFire() {
     Serial.printf("%d HES ON FIRE!\n",millis());
-    pyrosphere.sendTXT("3");
-    // pyrosphereModel.sendTXT("3");
+    webSocket.sendTXT(pyrosphereSingle,"3");
+    webSocket.sendTXT(pyrosphereModel,"3");
 }
 
 // Burn.

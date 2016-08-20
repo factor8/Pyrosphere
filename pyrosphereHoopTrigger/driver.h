@@ -4,6 +4,7 @@
 #include <ESP8266WebServer.h>
 #include <ESP8266HTTPUpdateServer.h>
 #include <ESP8266mDNS.h>
+#include <DNSServer.h>
 #include <WebSocketsServer.h>
 #include <WebSocketsClient.h>
 #include <FS.h>
@@ -34,7 +35,6 @@ boolean first_run;
 ESP8266WebServer server(80);
 ESP8266HTTPUpdateServer httpUpdater;
 WebSocketsServer webSocket = WebSocketsServer(81);
-WebSocketsClient pyrosphere;
 // SGWifi* wifi = new SGWifi();
 
 // holds the current upload
