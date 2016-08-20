@@ -23,6 +23,8 @@ const char* ssid= "LEDpaint";
 const char* pass= "betafish";
 const char* host= "pyrosphere";
 
+String SERVERIP = "192.168.1.134";
+
 // // Websocket Event Handler WSEH
 // void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length) {
 
@@ -174,7 +176,7 @@ void setup()
   Serial.println(WiFi.localIP());  
 
   // start webSocket server  
-  webSocket.begin("192.168.1.134",81);
+  webSocket.begin(SERVERIP,81);
   webSocket.onEvent(webSocketClientEvent);
   
   //SERVER INIT
@@ -265,19 +267,24 @@ void rapid() {
     digitalWrite(IGNITERPIN, HIGH);
     delay(duration);
     digitalWrite(IGNITERPIN, LOW);
+    delay(duration);
     digitalWrite(IGNITERPIN, HIGH);
     delay(duration);
     digitalWrite(IGNITERPIN, LOW);
+    delay(duration);
     digitalWrite(IGNITERPIN, HIGH);
     delay(duration);
     digitalWrite(IGNITERPIN, LOW);
+    delay(duration);
     digitalWrite(IGNITERPIN, HIGH);
     delay(duration);
     digitalWrite(IGNITERPIN, LOW);
+    delay(duration);
     digitalWrite(IGNITERPIN, HIGH);
     delay(duration);
     digitalWrite(IGNITERPIN, LOW);
 
+    webSocket.sendTXT("R");
 }
 
 

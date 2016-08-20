@@ -15,14 +15,14 @@ class ColorWipe : public SGEffect {
 			if (DEBUG) {Serial.println("Beginning effect: ColorWipe");}
 			_firstRun = 0;
 		}
-
+		
 		q(_iter,_primary);
-
-		// Serial.println("Stepping");
-		if (_iter == _nodesTotal) {
-   			if (_randomize) updatePrimary();    		
-    		blank();
-  		}
+	
+		// // Serial.println("Stepping");
+		// if (_iter == _nodesTotal) {
+  //  			if (_randomize) updatePrimary();    		
+  //   		blank();
+  // 		}
 
 		return true;
 	}; 

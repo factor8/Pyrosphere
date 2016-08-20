@@ -30,11 +30,13 @@ int speed = 100;
 int duration = 200;
 boolean shot = false;
 boolean score = false;
-long shotHappened = 0;
+long shotHappened,lastShake,lastScore,lastFrame = 0;
 uint8_t scoreCount = 0;
 uint32_t pixelColor = 0;
 
 #define shotTimeout 2000
+#define shakeDebounce 100
+#define scoreDebounce 200
 
 
 const char* ssid= "LEDpaint";
@@ -68,7 +70,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length
         if(payload[0] == 'M') { pyrosphereModel = num; }
 
         if(payload[0] == '0') {trigger();}        
-        if(payload[0] == '1') {Serial.printf("FIRED!\n");}                
+        if(payload[0] == '1') {Serial.printf("FIRED!\n");}
+        if(payload[0] == 'R') {Serial.printf("RAPID!\n");}        
         // if(payload[0] == '!') {
           
         //   if(payload[1] == '>'){
@@ -120,8 +123,10 @@ void setup()
 {
 
   pinMode(HOOPSWITCH, INPUT_PULLUP);  
+  pinMode(SHAKESWITCH, INPUT_PULLUP);  
+
   pixieSerial.begin(115200);
-  ledmeter->setBrightness(15);
+  ledmeter->setBrightness(80);
   // ledmeter->begin();
   ledmeter->show(); // Initialize all pixels to 'off'
 
@@ -231,45 +236,58 @@ void loop() {
 
   now = millis();   // This moment is beautiful.
   
-  if (now >= then+frameRate) {
-    ledEffect->render();
-    uint32_t newColor;
-    for(int i=0; i<pixelsTotal; i++){    
-      newColor = ledEffect->p(i);            
-      ledmeter->setPixelColor(i,newColor);
-    }       
-    
-    ledmeter->setPixelColor(pixelColor,0xFFFFFF);
-    // ledmeter->show();
+  
+  if (now >= shotHappened + shotTimeout) {
+      shot = false;
+  }
+  
+  // Did we shake?
+  if (now >= lastShake+shakeDebounce 
+      // && digitalRead(SHAKESWITCH)
+      && false
+      ) {        
+      if(shot == false) {
+        shotHappened = now;
+        shot = true;          
+      }
+      
+      
+      Serial.println("SHAKEN!");
+      lastShake = now; 
+  }
+
+  // Check the switch
+  if (now >= lastScore+scoreDebounce && digitalRead(HOOPSWITCH) == LOW) {        
+      shot = true;
+      score = true;
+      scoreCount++;
+
+      if (scoreCount < 3) {          
+        trigger();  
+      } else {
+        triggerOnFire();
+        scoreCount = 0;
+      }      
+
+      lastScore = now;
+  }
+
+  if (now >= lastFrame+frameRate) {
+
+      // Set to green and intensity by score.
+    if (scoreCount == 0) pixelColor = 0x00F000;
+    if (scoreCount == 1) pixelColor = 0xF0F000;
+    if (scoreCount == 2) pixelColor = 0xFF0000;
+    if (shotHappened && !score) pixelColor = 0x0000FF;
+     
+    for(int i=0; i<pixelsTotal; i++){
+      ledmeter->setPixelColor(0,pixelColor);            
+    }    
+  
+    ledmeter->show();
 
 
-    // Did we shake?
-    if (digitalRead(SHAKESWITCH)) {        
-        if(shot == false) {
-          shotHappened = now;
-          shot = true;          
-        }
-        
-        if (now >= shotHappened + shotTimeout) {
-            shot = false;
-        }
-    }
-
-    // Check the switch
-    if (digitalRead(HOOPSWITCH) == LOW) {        
-        
-        score = true;
-        scoreCount++;
-
-        if (scoreCount < 3) {          
-          trigger();  
-        } else {
-          triggerOnFire();
-          scoreCount = 0;
-        }      
-    }
-
-    then = now;    
+    lastFrame = now;
 
   }  
 
@@ -298,29 +316,6 @@ void triggerOnFire() {
     Serial.printf("%d HES ON FIRE!\n",millis());
     webSocket.sendTXT(pyrosphereSingle,"3");
     webSocket.sendTXT(pyrosphereModel,"3");
-}
-
-// Burn.
-void rapid() {
-  
-    Serial.println("Rapid!");
-
-    digitalWrite(HOOPSWITCH, HIGH);
-    delay(duration);
-    digitalWrite(HOOPSWITCH, LOW);
-    digitalWrite(HOOPSWITCH, HIGH);
-    delay(duration);
-    digitalWrite(HOOPSWITCH, LOW);
-    digitalWrite(HOOPSWITCH, HIGH);
-    delay(duration);
-    digitalWrite(HOOPSWITCH, LOW);
-    digitalWrite(HOOPSWITCH, HIGH);
-    delay(duration);
-    digitalWrite(HOOPSWITCH, LOW);
-    digitalWrite(HOOPSWITCH, HIGH);
-    delay(duration);
-    digitalWrite(HOOPSWITCH, LOW);
-
 }
 
 
